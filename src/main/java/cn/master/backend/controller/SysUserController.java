@@ -1,7 +1,10 @@
 package cn.master.backend.controller;
 
+import cn.master.backend.config.ResponseInfo;
 import cn.master.backend.controller.request.AuthenticateRequest;;
+import cn.master.backend.entity.SysUser;
 import cn.master.backend.service.MyUserDetailsService;
+import cn.master.backend.service.SysUserService;
 import cn.master.backend.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +27,7 @@ public class SysUserController {
     final MyUserDetailsService userDetailsService;
     final AuthenticationManager authenticationManager;
     final JwtUtils jwtUtils;
+    final SysUserService sysUserService;
 
     @PostMapping("/login")
     public String login(@RequestBody AuthenticateRequest request) {
@@ -32,9 +36,10 @@ public class SysUserController {
         return jwtUtils.generateToken(userDetails);
     }
 
-    @GetMapping("/hello")
-    public String hello() {
-        return "hello";
+    @PostMapping("/register")
+    public ResponseInfo<SysUser> registerUser(@RequestBody SysUser sysUser) {
+        SysUser user = sysUserService.addUser(sysUser);
+        return ResponseInfo.success(user);
     }
 
     @GetMapping("/test")
