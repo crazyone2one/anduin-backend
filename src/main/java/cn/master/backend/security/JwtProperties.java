@@ -1,4 +1,4 @@
-package cn.master.backend.config;
+package cn.master.backend.security;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 @ConfigurationProperties(prefix = "jwt")
-public class JwtProperty {
+public class JwtProperties {
     private String authorization;
     private String secretKey;
     private String tokenPrefix;

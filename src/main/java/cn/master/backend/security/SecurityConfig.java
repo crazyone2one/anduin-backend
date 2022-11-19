@@ -1,4 +1,4 @@
-package cn.master.backend.config;
+package cn.master.backend.security;
 
 import cn.master.backend.filter.JwtRequestFilter;
 import lombok.RequiredArgsConstructor;

@@ -1,7 +1,7 @@
 package cn.master.backend.filter;
 
-import cn.master.backend.config.JwtProperty;
-import cn.master.backend.service.MyUserDetailsService;
+import cn.master.backend.security.JwtProperties;
+import cn.master.backend.security.UserDetailsServiceImpl;
 import cn.master.backend.util.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -25,21 +25,21 @@ import java.util.Objects;
 @Component
 @RequiredArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
-    final MyUserDetailsService myUserDetailsService;
+    final UserDetailsServiceImpl userDetailsServiceImpl;
     final JwtUtils jwtUtils;
-    final JwtProperty jwtProperty;
+    final JwtProperties jwtProperties;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
         final String authorizationHeader = request.getHeader("Authorization");
         String userName = null;
         String jwt = null;
-        if (Objects.nonNull(authorizationHeader) && authorizationHeader.startsWith(jwtProperty.getTokenPrefix())) {
+        if (Objects.nonNull(authorizationHeader) && authorizationHeader.startsWith(jwtProperties.getTokenPrefix())) {
             jwt = authorizationHeader.substring(7);
             userName = jwtUtils.extractUsername(jwt);
         }
         if (Objects.nonNull(userName) && Objects.isNull(SecurityContextHolder.getContext().getAuthentication())) {
-            UserDetails userDetails = myUserDetailsService.loadUserByUsername(userName);
+            UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(userName);
             if (jwtUtils.validateToken(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
