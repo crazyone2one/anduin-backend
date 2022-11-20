@@ -3,12 +3,16 @@ package cn.master.backend.service.impl;
 import cn.master.backend.entity.SysUser;
 import cn.master.backend.mapper.SysUserMapper;
 import cn.master.backend.service.SysUserService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * <p>
@@ -26,11 +30,29 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private final static String DEFAULT_PASSWORD = "e10adc3949ba59abbe56e057f20f883e";
     @Override
     public SysUser addUser(SysUser sysUser) {
+        LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<SysUser>()
+                .eq(SysUser::getUsername, sysUser.getUsername());
+        if (baseMapper.exists(wrapper)) {
+            throw new RuntimeException("用户名已存在");
+        }
         String password = passwordEncoder.encode(StringUtils.isBlank(sysUser.getPassword()) ? DEFAULT_PASSWORD : sysUser.getPassword());
         sysUser.setPassword(password);
         sysUser.setDeleteFlag(true);
         sysUser.setStatus(true);
         baseMapper.insert(sysUser);
         return sysUser;
+    }
+
+    @Override
+    public SysUser loadUserByName(String userName) {
+        return baseMapper.loadUserByUsername(userName);
+    }
+
+    @Override
+    public List<SysUser> selectPageVo(SysUser sysUser, IPage<SysUser> page) {
+        LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<SysUser>()
+                .like(StringUtils.isNotBlank(sysUser.getUsername()), SysUser::getUsername, sysUser.getUsername())
+                .eq(SysUser::getDeleteFlag,true);
+        return baseMapper.selectList(wrapper);
     }
 }
