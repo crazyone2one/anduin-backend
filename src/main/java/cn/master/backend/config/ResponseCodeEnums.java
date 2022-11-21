@@ -9,6 +9,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ResponseCodeEnums {
+    /***/
     SUCCESS(200, "success"),
     FAIL(500, "failed"),
 
