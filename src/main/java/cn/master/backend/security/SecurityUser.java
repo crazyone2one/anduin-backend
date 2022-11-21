@@ -13,6 +13,8 @@ import java.util.Collection;
 public class SecurityUser implements UserDetails {
     private String username;
     private String password;
+    private String nickname;
+    private String token;
     private Collection<? extends GrantedAuthority> authorities;
 
     public SecurityUser(String username, String password, Collection<? extends GrantedAuthority> authorities) {

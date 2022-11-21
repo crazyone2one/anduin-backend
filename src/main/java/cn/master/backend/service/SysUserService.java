@@ -1,9 +1,12 @@
 package cn.master.backend.service;
 
 import cn.master.backend.entity.SysUser;
+import cn.master.backend.request.QueryUserRequest;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -16,6 +19,12 @@ import java.util.List;
  */
 public interface SysUserService extends IService<SysUser> {
 
+    /**
+     * 添加用户
+     *
+     * @param sysUser 参数
+     * @return cn.master.backend.entity.SysUser
+     */
     SysUser addUser(SysUser sysUser);
 
     /**
@@ -29,9 +38,19 @@ public interface SysUserService extends IService<SysUser> {
     /**
      * 查询用户
      *
-     * @param sysUser 查询条件
-     * @param page    入参的 IPage 可以为 null(为 null 则不分页)
+     * @param queryUserRequest 查询条件
+     * @param page             入参的 IPage 可以为 null(为 null 则不分页)
      * @return java.util.List<cn.master.backend.entity.SysUser>
      */
-    List<SysUser> selectPageVo(SysUser sysUser, IPage<SysUser> page);
+    List<SysUser> selectPageVo(QueryUserRequest queryUserRequest, IPage<SysUser> page);
+
+    /**
+     * 下载
+     *
+     * @param httpServletResponse httpServletResponse
+     * @param downloadUser        true表示导出用户信息， false表示下载模板
+     * @param queryUserRequest    查询条件
+     * @throws IOException IOException
+     */
+    void download(HttpServletResponse httpServletResponse, boolean downloadUser, QueryUserRequest queryUserRequest) throws IOException;
 }
