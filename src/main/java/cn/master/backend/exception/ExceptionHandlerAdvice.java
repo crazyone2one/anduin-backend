@@ -32,6 +32,7 @@ public class ExceptionHandlerAdvice {
     @ExceptionHandler({MissingServletRequestParameterException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseInfo<String> badRequestException(Exception ex) {
+        log.error("badRequestException，{}", ex.getMessage());
         return new ResponseInfo<>(HttpStatus.BAD_REQUEST.value() + "", "缺少必填参数！");
     }
 
