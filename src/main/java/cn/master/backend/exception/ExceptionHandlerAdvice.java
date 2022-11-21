@@ -1,7 +1,10 @@
-package cn.master.backend.config;
+package cn.master.backend.exception;
 
+import cn.master.backend.config.ResponseInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -57,5 +60,29 @@ public class ExceptionHandlerAdvice {
     public ResponseInfo<String> exception(Throwable throwable) {
         log.error("系统异常", throwable);
         return new ResponseInfo<>(HttpStatus.INTERNAL_SERVER_ERROR.value() + "系统异常，请联系管理员！");
+    }
+
+    @ExceptionHandler(CustomException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseInfo<String> handleCustomException(final CustomException e) {
+        log.error("handleCustomException : {}", e.getMessage());
+        return new ResponseInfo<>(HttpStatus.BAD_REQUEST.value() + "", e.getMessage());
+    }
+
+    /**
+     * 认证失败处理
+     */
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+    public ResponseInfo<String> handleBadCredentialsException(BadCredentialsException exception) {
+        log.error("handleBadCredentialsException : {}", exception.getMessage());
+        return new ResponseInfo<>(HttpStatus.UNAUTHORIZED.value() + "", exception.getMessage());
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseInfo<String> handleUsernameNotFoundException(UsernameNotFoundException exception) {
+        log.error("handleUsernameNotFoundException : {}", exception.getMessage());
+        return new ResponseInfo<>(HttpStatus.BAD_REQUEST.value() + "", exception.getMessage());
     }
 }
