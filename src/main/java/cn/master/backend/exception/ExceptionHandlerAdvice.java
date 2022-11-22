@@ -64,7 +64,7 @@ public class ExceptionHandlerAdvice {
     }
 
     @ExceptionHandler(CustomException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseInfo<String> handleCustomException(final CustomException e) {
         log.error("handleCustomException : {}", e.getMessage());
         return new ResponseInfo<>(HttpStatus.BAD_REQUEST.value() + "", e.getMessage());
