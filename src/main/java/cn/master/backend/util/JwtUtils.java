@@ -1,13 +1,16 @@
 package cn.master.backend.util;
 
 import cn.master.backend.security.JwtProperties;
+import cn.master.backend.security.SecurityUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -89,8 +92,24 @@ public class JwtUtils {
      * @param userDetails userDetails
      * @return java.lang.String
      */
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(SecurityUser userDetails) {
         Map<String, Object> claims = new LinkedHashMap<>();
+        claims.put("id", userDetails.getUserId());
+        claims.put("name", userDetails.getUsername());
         return createToken(claims, userDetails.getUsername());
+    }
+
+    /**
+     * 从httpServletRequest中获取token
+     *
+     * @param httpServletRequest httpServletRequest
+     * @return java.lang.String
+     */
+    public String getJwtTokenFromRequest(HttpServletRequest httpServletRequest) {
+        String headerAuth = httpServletRequest.getHeader("Authorization");
+        if (StringUtils.isNotBlank(headerAuth) && headerAuth.startsWith(jwtProperties.getTokenPrefix())) {
+            return headerAuth.substring(7);
+        }
+        return "";
     }
 }
