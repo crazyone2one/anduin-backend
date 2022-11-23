@@ -15,6 +15,7 @@ public class SecurityUser implements UserDetails {
     private String password;
     private String nickname;
     private String token;
+    private String userId;
     private Collection<? extends GrantedAuthority> authorities;
 
     public SecurityUser(String username, String password, Collection<? extends GrantedAuthority> authorities) {
