@@ -28,6 +28,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         // TODO: 2022/11/19 先指定role，后期优化
         SecurityUser securityUser = new SecurityUser(sysUser.getUsername(), sysUser.getPassword(), List.of(new SimpleGrantedAuthority("USER")));
         securityUser.setNickname(sysUser.getNickname());
+        securityUser.setUserId(sysUser.getUserId());
         return securityUser;
     }
 }
