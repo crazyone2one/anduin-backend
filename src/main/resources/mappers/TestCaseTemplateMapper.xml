@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.master.backend.mapper.TestCaseTemplateMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.master.backend.entity.TestCaseTemplate">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="type" property="type" />
+        <result column="description" property="description" />
+        <result column="case_name" property="caseName" />
+        <result column="system" property="system" />
+        <result column="global" property="global" />
+        <result column="prerequisite" property="prerequisite" />
+        <result column="step_description" property="stepDescription" />
+        <result column="expected_result" property="expectedResult" />
+        <result column="actual_result" property="actualResult" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="step_model" property="stepModel" />
+        <result column="steps" property="steps" />
+        <result column="create_user" property="createUser" />
+        <result column="project_id" property="projectId" />
+    </resultMap>
+    <select id="listAll" resultType="cn.master.backend.entity.TestCaseTemplate">
+        select * from test_case_template tcft
+        <where>
+            <if test="request.name != null">
+                and tcft.name LIKE CONCAT('%', #{request.name}, '%')
+            </if>
+            <if test="request.projectId != null">
+                and (
+                tcft.project_id = #{request.projectId}
+                or (
+                tcft.global = 1 and
+                not exists (
+                select id
+                from test_case_template tcft_child
+                where tcft_child.name = tcft.name and tcft_child.global != 1 and tcft_child.project_id = #{request.projectId})))
+            </if>
+        </where>
+        <if test="request.orders != null and request.orders.size() > 0">
+            order by
+            <foreach collection="request.orders" separator="," item="order">
+                <choose>
+                    <when test="order.prefix != null and order.prefix != ''">
+                        ${order.prefix}.`${order.name}` ${order.type}
+                    </when>
+                    <when test="order.name ==  'user_name' ">
+                        `user_id` ${order.type}
+                    </when>
+                    <otherwise>
+                        `${order.name}` ${order.type}
+                    </otherwise>
+                </choose>
+            </foreach>
+        </if>
+    </select>
+
+</mapper>

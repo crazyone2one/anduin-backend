@@ -1,11 +1,10 @@
 package cn.master.backend.util;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
-import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
-import com.baomidou.mybatisplus.generator.engine.VelocityTemplateEngine;
 
 import java.util.Collections;
 
@@ -29,24 +28,15 @@ public class AutoGenerator {
                             .pathInfo(Collections.singletonMap(OutputFile.xml, System.getProperty("user.dir") + "/src/main/resources/mappers")); // 设置mapperXml生成路径
                 })
                 .strategyConfig(builder -> {
-                    builder.addInclude("sys_user") // 设置需要生成的表名
+                    builder.addInclude("test_case_template") // 设置需要生成的表名
                             .addTablePrefix("t_", "c_") // 设置过滤表前缀
                             // Service 策略配置
-                            .serviceBuilder()
-                            .formatServiceFileName("%sService")
-                            .formatServiceImplFileName("%sServiceImpl")
-                            .entityBuilder()
-                            .idType(IdType.ASSIGN_ID)
-                            .enableLombok()
-                            .enableTableFieldAnnotation()
+                            .serviceBuilder().formatServiceFileName("%sService").formatServiceImplFileName("%sServiceImpl")
+                            .entityBuilder().idType(IdType.ASSIGN_ID).enableLombok().enableTableFieldAnnotation()
                             .naming(NamingStrategy.underline_to_camel)  //数据库表映射到实体的命名策略：下划线转驼峰命
                             .columnNaming(NamingStrategy.underline_to_camel)    //数据库表字段映射到实体的命名策略：下划线转驼峰命
-                            .controllerBuilder()
-                            .formatFileName("%sController")
-                            .enableRestStyle() // 开启RestController注解
-                            .mapperBuilder()// mapper策略配置
-                            .formatMapperFileName("%sMapper")
-                            .formatXmlFileName("%sMapper");
+                            .controllerBuilder().formatFileName("%sController").enableRestStyle() // 开启RestController注解
+                            .mapperBuilder().enableBaseResultMap().superClass(BaseMapper.class).formatMapperFileName("%sMapper").formatXmlFileName("%sMapper");
                 })
 
                 .execute();

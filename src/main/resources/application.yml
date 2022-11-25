@@ -10,4 +10,7 @@ jwt:
   secret-key: Password
   authorization: Authorization
   token-prefix: Bearer
-  expiration-time: 86400
+  expiration-time: 10800 # 3h
+
+mybatis-plus:
+  mapper-locations: classpath*:mappers/*.xml

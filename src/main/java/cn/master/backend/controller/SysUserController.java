@@ -79,4 +79,9 @@ public class SysUserController {
         EasyExcel.read(file.getInputStream(), SysUser.class, new SystemUserListener(sysUserService)).sheet().doRead();
         return ResponseInfo.success();
     }
+
+    @GetMapping("/project/member/option")
+    public ResponseInfo<List<SysUser>> getProjectUser() {
+        return ResponseInfo.success(sysUserService.selectPageVo(null, null));
+    }
 }

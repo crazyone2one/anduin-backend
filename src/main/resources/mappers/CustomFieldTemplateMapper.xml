@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.master.backend.mapper.CustomFieldTemplateMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.master.backend.entity.CustomFieldTemplate">
+        <id column="id" property="id" />
+        <result column="field_id" property="fieldId" />
+        <result column="template_id" property="templateId" />
+        <result column="scene" property="scene" />
+        <result column="required" property="required" />
+        <result column="order" property="order" />
+        <result column="default_value" property="defaultValue" />
+        <result column="custom_data" property="customData" />
+        <result column="key" property="key" />
+    </resultMap>
+    <select id="listByRequest" resultType="cn.master.backend.dto.CustomFieldTemplateDao">
+        select
+        field_id, template_id, required, default_value, custom_data,
+        cft.id as id,
+        cf.name as name, cf.type as type, cf.remark as remark, cf.`system` as `system`, cf.options as options
+        from custom_field_template cft
+        inner join custom_field cf
+        on cft.field_id = cf.id
+        <if test="request.templateId != null">
+            where cft.template_id = #{request.templateId}
+        </if>
+        order by `order` asc
+    </select>
+    <select id="getLastOrder" resultType="java.lang.Long">
+        select `order` from custom_field_template where template_id = #{templateId}
+        <if test="baseOrder != null">
+            and `order` &gt; #{baseOrder}
+        </if>
+        order by `order` desc limit 1;
+    </select>
+
+</mapper>

@@ -72,6 +72,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * @return com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<cn.master.backend.entity.SysUser>
      */
     private static LambdaQueryWrapper<SysUser> getLambdaQueryWrapper(QueryUserRequest queryUserRequest) {
+        if (Objects.isNull(queryUserRequest)) {
+            return new LambdaQueryWrapper<>();
+        }
         return new LambdaQueryWrapper<SysUser>()
                 .like(StringUtils.isNotBlank(queryUserRequest.getName()), SysUser::getUsername, queryUserRequest.getName())
                 .in(CollectionUtils.isNotEmpty(queryUserRequest.getIds()),SysUser::getUserId,queryUserRequest.getIds())
