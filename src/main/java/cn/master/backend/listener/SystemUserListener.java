@@ -3,12 +3,14 @@ package cn.master.backend.listener;
 import cn.master.backend.entity.SysUser;
 import cn.master.backend.service.SysUserService;
 import cn.master.backend.util.JacksonUtils;
+import cn.master.backend.util.ServiceUtils;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.util.ListUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -22,7 +24,8 @@ public class SystemUserListener implements ReadListener<SysUser> {
      */
     private static final int BATCH_COUNT = 100;
     private List<SysUser> cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
-     final SysUserService sysUserService;
+    final SysUserService sysUserService;
+    final boolean updateSupport;
 
     @Override
     public void invoke(SysUser sysUser, AnalysisContext analysisContext) {
@@ -37,7 +40,8 @@ public class SystemUserListener implements ReadListener<SysUser> {
     }
 
     private void saveData() {
-        cachedDataList.forEach(sysUserService::addUser);
+        HttpServletRequest httpServletRequest = ServiceUtils.getHttpServletRequest();
+        sysUserService.importUser(httpServletRequest, cachedDataList, updateSupport);
     }
 
     @Override

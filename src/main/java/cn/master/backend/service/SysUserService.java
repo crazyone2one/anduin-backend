@@ -5,6 +5,7 @@ import cn.master.backend.request.QueryUserRequest;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
@@ -22,10 +23,19 @@ public interface SysUserService extends IService<SysUser> {
     /**
      * 添加用户
      *
+     * @param httpServletRequest httpServletRequest
+     * @param sysUser            参数
+     * @return cn.master.backend.entity.SysUser
+     */
+    SysUser addUser(HttpServletRequest httpServletRequest, SysUser sysUser);
+
+    /**
+     * 修改用户
+     *
      * @param sysUser 参数
      * @return cn.master.backend.entity.SysUser
      */
-    SysUser addUser(SysUser sysUser);
+    SysUser editUser(SysUser sysUser);
 
     /**
      * 根据用户名获取用户
@@ -42,7 +52,7 @@ public interface SysUserService extends IService<SysUser> {
      * @param page             入参的 IPage 可以为 null(为 null 则不分页)
      * @return java.util.List<cn.master.backend.entity.SysUser>
      */
-    List<SysUser> selectPageVo(QueryUserRequest queryUserRequest, IPage<SysUser> page);
+    IPage<SysUser> selectPageVo(QueryUserRequest queryUserRequest, IPage<SysUser> page);
 
     /**
      * 下载
@@ -53,4 +63,8 @@ public interface SysUserService extends IService<SysUser> {
      * @throws IOException IOException
      */
     void download(HttpServletResponse httpServletResponse, boolean downloadUser, QueryUserRequest queryUserRequest) throws IOException;
+
+    String importUser(HttpServletRequest httpServletRequest, List<SysUser> cachedDataList, boolean updateSupport);
+
+    String updateUserStatus(String userId);
 }

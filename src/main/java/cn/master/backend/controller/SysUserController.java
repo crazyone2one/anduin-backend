@@ -10,6 +10,7 @@ import cn.master.backend.security.UserDetailsServiceImpl;
 import cn.master.backend.service.SysUserService;
 import cn.master.backend.util.JwtUtils;
 import com.alibaba.excel.EasyExcel;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,6 +18,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -48,19 +50,26 @@ public class SysUserController {
         return ResponseInfo.success(userDetails);
     }
 
+    @PostMapping("/edit")
+    public ResponseInfo<SysUser> editUser(@RequestBody SysUser sysUser) {
+        SysUser editUser = sysUserService.editUser(sysUser);
+        return ResponseInfo.success(editUser);
+    }
+
+
     @PostMapping("/register")
-    public ResponseInfo<SysUser> registerUser(@RequestBody SysUser sysUser) {
-        SysUser user = sysUserService.addUser(sysUser);
+    public ResponseInfo<SysUser> registerUser(HttpServletRequest httpServletRequest, @RequestBody SysUser sysUser) {
+        SysUser user = sysUserService.addUser(httpServletRequest, sysUser);
         return ResponseInfo.success(user);
     }
 
     @PostMapping("/list/{page}/{limit}")
     public ResponseInfo<Map<String, Object>> loadUserList(@RequestBody QueryUserRequest user, @PathVariable long page, @PathVariable long limit) {
         Page<SysUser> producePage = new Page<>(page, limit);
-        List<SysUser> sysUserList = sysUserService.selectPageVo(user, producePage);
+        IPage<SysUser> iPage = sysUserService.selectPageVo(user, producePage);
         Map<String, Object> result = new LinkedHashMap<>();
-        result.put("total", sysUserList.size());
-        result.put("records", sysUserList);
+        result.put("total", iPage.getTotal());
+        result.put("records", iPage.getRecords());
         return ResponseInfo.success(result);
     }
 
@@ -75,13 +84,18 @@ public class SysUserController {
     }
 
     @PostMapping("/import")
-    public ResponseInfo<String> upload(MultipartFile file) throws IOException {
-        EasyExcel.read(file.getInputStream(), SysUser.class, new SystemUserListener(sysUserService)).sheet().doRead();
+    public ResponseInfo<String> upload(MultipartFile file, boolean updateSupport) throws IOException {
+        EasyExcel.read(file.getInputStream(), SysUser.class, new SystemUserListener(sysUserService, updateSupport)).sheet().doRead();
         return ResponseInfo.success();
     }
 
     @GetMapping("/project/member/option")
     public ResponseInfo<List<SysUser>> getProjectUser() {
-        return ResponseInfo.success(sysUserService.selectPageVo(null, null));
+        return ResponseInfo.success(sysUserService.selectPageVo(null, null).getRecords());
+    }
+
+    @PostMapping("/updateStatus/{userId}")
+    public ResponseInfo<String> updateUserStatus(@PathVariable String userId) {
+        return ResponseInfo.success(sysUserService.updateUserStatus(userId));
     }
 }

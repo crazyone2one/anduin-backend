@@ -72,7 +72,7 @@ public class SysUser implements Serializable {
      * 状态  0：禁用   1：正常
      */
     @TableField("status")
-    @ExcelProperty(value = "用户状态")
+    @ExcelIgnore
     private Boolean status;
 
     /**
