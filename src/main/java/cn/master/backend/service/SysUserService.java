@@ -64,7 +64,21 @@ public interface SysUserService extends IService<SysUser> {
      */
     void download(HttpServletResponse httpServletResponse, boolean downloadUser, QueryUserRequest queryUserRequest) throws IOException;
 
+    /**
+     * 导入用户
+     *
+     * @param httpServletRequest httpServletRequest
+     * @param cachedDataList     待导入的用户数据
+     * @param updateSupport      是否支持更新已存在的用户
+     * @return java.lang.String
+     */
     String importUser(HttpServletRequest httpServletRequest, List<SysUser> cachedDataList, boolean updateSupport);
 
+    /**
+     * 更新用户状态
+     *
+     * @param userId user id
+     * @return java.lang.String
+     */
     String updateUserStatus(String userId);
 }

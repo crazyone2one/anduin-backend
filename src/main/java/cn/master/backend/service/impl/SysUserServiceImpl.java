@@ -147,6 +147,16 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                     addUser(httpServletRequest, sysUser);
                     successNum++;
                     successMsg.append("<br/>").append(successNum).append("、账号 ").append(sysUser.getUsername()).append(" 导入成功");
+                } else if (updateSupport) {
+                    SysUser loadUserByName = loadUserByName(sysUser.getUsername());
+                    SysUser sysUser1 = new SysUser();
+                    BeanUtils.copyProperties(loadUserByName, sysUser1);
+                    sysUser1.setEmail(sysUser.getEmail());
+                    sysUser1.setNickname(sysUser.getNickname());
+                    sysUser1.setMobile(sysUser.getMobile());
+                    baseMapper.updateById(sysUser1);
+                    successNum++;
+                    successMsg.append("<br/>").append(successNum).append("、账号 ").append(sysUser.getUsername()).append(" 更新成功");
                 } else {
                     failureNum++;
                     failureMsg.append("<br/>").append(failureNum).append("、账号 ").append(sysUser.getUsername()).append(" 已存在");
