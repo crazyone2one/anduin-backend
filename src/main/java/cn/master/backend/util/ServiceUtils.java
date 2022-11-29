@@ -2,9 +2,13 @@ package cn.master.backend.util;
 
 import cn.master.backend.request.OrderRequest;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BiFunction;
 
 /**
@@ -43,5 +47,9 @@ public class ServiceUtils {
     public static Long getNextOrder(String templateId, BiFunction<String, Long, Long> getLastOrderFunc) {
         Long lastOrder = getLastOrderFunc.apply(templateId, null);
         return (lastOrder == null ? 0 : lastOrder) + ServiceUtils.ORDER_STEP;
+    }
+
+    public static HttpServletRequest getHttpServletRequest() {
+        return ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
     }
 }
