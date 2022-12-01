@@ -1,11 +1,14 @@
 package cn.master.backend.service;
 
 import cn.master.backend.entity.TestCase;
+import cn.master.backend.request.EditTestCaseRequest;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * <p>
- *  服务类
+ * 服务类
  * </p>
  *
  * @author 11's papa
@@ -13,4 +16,12 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface TestCaseService extends IService<TestCase> {
 
+    /**
+     * 添加测试用例数据
+     *
+     * @param request 参数
+     * @return cn.master.backend.entity.TestCase
+     */
+    TestCase addTestCase(EditTestCaseRequest request);
+    IPage<TestCase> selectPageList(TestCase request, Page<TestCase> producePage);
 }
