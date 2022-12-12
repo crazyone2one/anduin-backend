@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,12 +44,12 @@ public class SysProjectController {
         return ResponseInfo.success(result);
     }
     @PostMapping("/add")
-    public ResponseInfo<SysProject> addProject(@RequestBody SysProject project) {
-        return sysProjectService.addProject(project);
+    public ResponseInfo<SysProject> addProject(HttpServletRequest httpServletRequest, @RequestBody SysProject project) {
+        return sysProjectService.addProject(httpServletRequest, project);
     }
 
     @PostMapping("/update")
-    public ResponseInfo<Integer> updateProject(@RequestBody SysProject project) {
-        return ResponseInfo.success(sysProjectService.updateProject(project));
+    public ResponseInfo<Integer> updateProject(HttpServletRequest httpServletRequest,@RequestBody SysProject project) {
+        return ResponseInfo.success(sysProjectService.updateProject(httpServletRequest, project));
     }
 }

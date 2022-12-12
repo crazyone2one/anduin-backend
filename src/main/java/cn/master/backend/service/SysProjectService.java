@@ -5,6 +5,8 @@ import cn.master.backend.entity.SysProject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * <p>
  * 服务类
@@ -27,16 +29,18 @@ public interface SysProjectService extends IService<SysProject> {
     /**
      * 添加项目数据
      *
-     * @param project 参数
+     * @param httpServletRequest httpServletRequest
+     * @param project            参数
      * @return cn.master.backend.config.ResponseInfo<cn.master.backend.entity.SysProject>
      */
-    ResponseInfo<SysProject> addProject(SysProject project);
+    ResponseInfo<SysProject> addProject(HttpServletRequest httpServletRequest, SysProject project);
 
     /**
      * 更新项目信息
      *
-     * @param project 参数
+     * @param httpServletRequest httpServletRequest
+     * @param project            参数
      * @return int
      */
-    int updateProject(SysProject project);
+    int updateProject(HttpServletRequest httpServletRequest, SysProject project);
 }
