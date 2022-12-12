@@ -103,7 +103,7 @@ public class TestCaseNodeServiceImpl extends ServiceImpl<TestCaseNodeMapper, Tes
         return nodes.stream().collect(Collectors.toMap(TestCaseNode::getId, TestCaseNode::getCaseNum));
     }
 
-    private void getDefaultNode(HttpServletRequest httpServletRequest, String projectId) {
+    private TestCaseNode getDefaultNode(HttpServletRequest httpServletRequest, String projectId) {
         LambdaQueryWrapper<TestCaseNode> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(TestCaseNode::getProjectId, projectId)
                 .eq(TestCaseNode::getName, "未规划用例").isNull(TestCaseNode::getParentId);
@@ -114,16 +114,16 @@ public class TestCaseNodeServiceImpl extends ServiceImpl<TestCaseNodeMapper, Tes
             TestCaseNode testCaseNode = TestCaseNode.builder().name("未规划用例").pos(1.0).level(1).projectId(projectId)
                     .createUser((String) claims.get("id")).build();
             baseMapper.insert(testCaseNode);
-//            return testCaseNode;
+            return testCaseNode;
         }
-//        return list.get(0);
+        return list.get(0);
     }
 
     @Override
     public ResponseInfo<String> addNode(HttpServletRequest httpServletRequest, TestCaseNode node) {
         validateNode(node);
         String token = jwtUtils.getJwtTokenFromRequest(httpServletRequest);
-        node.setCreateUser(jwtUtils.extractAllClaims(token).getId());
+        node.setCreateUser((String) jwtUtils.extractAllClaims(token).get("id"));
         double pos = getNextLevelPos(node.getProjectId(), node.getLevel(), node.getParentId());
         node.setPos(pos);
         baseMapper.insert(node);

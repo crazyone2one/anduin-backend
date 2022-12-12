@@ -2,10 +2,13 @@ package cn.master.backend.service.impl;
 
 import cn.master.backend.constants.TestCaseReviewStatus;
 import cn.master.backend.entity.TestCase;
+import cn.master.backend.entity.TestCaseFollow;
 import cn.master.backend.entity.TestCaseNode;
+import cn.master.backend.mapper.TestCaseFollowMapper;
 import cn.master.backend.mapper.TestCaseMapper;
 import cn.master.backend.mapper.TestCaseNodeMapper;
 import cn.master.backend.request.EditTestCaseRequest;
+import cn.master.backend.request.QueryTestCaseRequest;
 import cn.master.backend.service.TestCaseService;
 import cn.master.backend.util.JwtUtils;
 import cn.master.backend.util.ServiceUtils;
@@ -40,6 +43,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
 
     final JwtUtils jwtUtils;
     final TestCaseNodeMapper testCaseNodeMapper;
+    final TestCaseFollowMapper testCaseFollowMapper;
     @Override
     public TestCase addTestCase(EditTestCaseRequest request) {
         checkTestCaseExist(request);
@@ -53,12 +57,24 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
         request.setOrder(ServiceUtils.getNextOrder(request.getProjectId(), baseMapper::getLastOrder));
         request.setLatest(true);
         baseMapper.insert(request);
+        saveFollows(request.getId(), request.getFollows());
         return request;
     }
 
+    private void saveFollows(String id, List<String> follows) {
+        testCaseFollowMapper.deleteByCaseId(id);
+        if (CollectionUtils.isNotEmpty(follows)) {
+            for (String follow : follows) {
+                TestCaseFollow build = TestCaseFollow.builder().followId(follow).caseId(id).build();
+                testCaseFollowMapper.insert(build);
+            }
+        }
+    }
+
     @Override
-    public IPage<TestCase> selectPageList(TestCase request, Page<TestCase> producePage) {
+    public IPage<TestCase> selectPageList(QueryTestCaseRequest request, Page<TestCase> producePage) {
         LambdaQueryWrapper<TestCase> wrapper = new LambdaQueryWrapper<>();
+        wrapper.in(CollectionUtils.isNotEmpty(request.getNodeIds()), TestCase::getNodeId, request.getNodeIds());
         return baseMapper.selectPage(Objects.nonNull(producePage) ? producePage : null, wrapper);
     }
 

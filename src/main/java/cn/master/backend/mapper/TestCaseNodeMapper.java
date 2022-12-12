@@ -36,4 +36,7 @@ public interface TestCaseNodeMapper extends BaseMapper<TestCaseNode> {
      */
     @Select("select id, project_id, `name`, parent_id, `level`, create_time, update_time, pos, create_user from test_case_node where test_case_node.project_id = #{projectId}  order by pos asc")
     List<TestCaseNode> getNodeTreeByProjectId(@Param("projectId") String projectId);
+
+    @Select("select * from test_case_node where test_case_node.project_id = #{projectId} and test_case_node.name=#{nodeName} order by pos asc")
+    List<TestCaseNode> getAllByLabelList(@Param("projectId") String projectId, @Param("nodeName") String nodeName);
 }

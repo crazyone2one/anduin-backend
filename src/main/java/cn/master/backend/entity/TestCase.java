@@ -1,7 +1,9 @@
 package cn.master.backend.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -18,6 +20,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @TableName("test_case")
+@AllArgsConstructor
+@NoArgsConstructor
 public class TestCase implements Serializable {
 
     private static final long serialVersionUID = 1L;

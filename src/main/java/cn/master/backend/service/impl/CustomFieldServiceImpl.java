@@ -73,6 +73,7 @@ public class CustomFieldServiceImpl extends ServiceImpl<CustomFieldMapper, Custo
     @Override
     public IPage<CustomField> selectPageList(IPage<CustomField> page, QueryCustomFieldRequest request) {
         LambdaQueryWrapper<CustomField> wrapper = new LambdaQueryWrapper<>();
+        wrapper.like(StringUtils.isNotBlank(request.getName()), CustomField::getName, request.getName());
         return baseMapper.selectPage(page, wrapper);
     }
 

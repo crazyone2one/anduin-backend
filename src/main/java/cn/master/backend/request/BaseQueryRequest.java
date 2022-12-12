@@ -16,4 +16,5 @@ public class BaseQueryRequest {
      * 排序条件
      */
     private List<OrderRequest> orders;
+    private List<String> nodeIds;
 }

@@ -1,7 +1,9 @@
 package cn.master.backend.request;
 
 import cn.master.backend.entity.TestCase;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
@@ -11,6 +13,8 @@ import java.util.List;
  */
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class EditTestCaseRequest extends TestCase {
     private List<String> follows;
 }
