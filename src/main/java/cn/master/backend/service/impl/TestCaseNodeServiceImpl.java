@@ -2,6 +2,7 @@ package cn.master.backend.service.impl;
 
 import cn.master.backend.config.ResponseInfo;
 import cn.master.backend.constants.TestCaseConstants;
+import cn.master.backend.entity.SysProject;
 import cn.master.backend.entity.TestCase;
 import cn.master.backend.entity.TestCaseNode;
 import cn.master.backend.exception.CustomException;
@@ -199,5 +200,19 @@ public class TestCaseNodeServiceImpl extends ServiceImpl<TestCaseNodeMapper, Tes
     @Override
     public ResponseInfo<String> deleteNode(List<String> nodeIds) {
         return null;
+    }
+
+    @Override
+    public void updateNameByProject(SysProject sysProject) {
+        LambdaQueryWrapper<TestCaseNode> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(TestCaseNode::getProjectId, sysProject.getId())
+                .isNull(TestCaseNode::getParentId)
+                .eq(TestCaseNode::getLevel, 1)
+                .ne(TestCaseNode::getName, "未规划用例");
+        TestCaseNode testCaseNode = baseMapper.selectOne(wrapper);
+        if (Objects.nonNull(testCaseNode)) {
+            testCaseNode.setName(sysProject.getName());
+            baseMapper.updateById(testCaseNode);
+        }
     }
 }

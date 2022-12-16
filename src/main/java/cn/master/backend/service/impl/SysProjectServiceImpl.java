@@ -5,6 +5,7 @@ import cn.master.backend.entity.SysProject;
 import cn.master.backend.exception.CustomException;
 import cn.master.backend.mapper.SysProjectMapper;
 import cn.master.backend.service.SysProjectService;
+import cn.master.backend.service.TestCaseNodeService;
 import cn.master.backend.util.JwtUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -30,7 +31,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Transactional(rollbackFor = Exception.class)
 public class SysProjectServiceImpl extends ServiceImpl<SysProjectMapper, SysProject> implements SysProjectService {
-
+    final TestCaseNodeService testCaseNodeService;
     final JwtUtils jwtUtils;
     @Override
     public IPage<SysProject> selectPageList(SysProject project, IPage<SysProject> page) {
@@ -59,6 +60,8 @@ public class SysProjectServiceImpl extends ServiceImpl<SysProjectMapper, SysProj
         if (baseMapper.exists(wrapper)) {
             throw new CustomException("已存在相同项目");
         }
-        return baseMapper.updateById(project);
+        int updateById = baseMapper.updateById(project);
+        testCaseNodeService.updateNameByProject(project);
+        return updateById;
     }
 }

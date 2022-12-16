@@ -1,6 +1,7 @@
 package cn.master.backend.service;
 
 import cn.master.backend.config.ResponseInfo;
+import cn.master.backend.entity.SysProject;
 import cn.master.backend.entity.TestCaseNode;
 import cn.master.backend.request.QueryTestCaseRequest;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -28,9 +29,35 @@ public interface TestCaseNodeService extends IService<TestCaseNode> {
      */
     List<TestCaseNode> queryNodeTreeByProjectId(HttpServletRequest httpServletRequest, String projectId, QueryTestCaseRequest request);
 
+    /**
+     * 添加节点
+     *
+     * @param httpServletRequest HttpServletRequest
+     * @param node               节点参数
+     * @return cn.master.backend.config.ResponseInfo<java.lang.String>
+     */
     ResponseInfo<String> addNode(HttpServletRequest httpServletRequest, TestCaseNode node);
 
+    /**
+     * 编辑节点
+     *
+     * @param node 节点参数
+     * @return cn.master.backend.entity.TestCaseNode
+     */
     TestCaseNode editNode(TestCaseNode node);
 
+    /**
+     * 删除节点
+     *
+     * @param nodeIds 节点id
+     * @return cn.master.backend.config.ResponseInfo<java.lang.String>
+     */
     ResponseInfo<String> deleteNode(List<String> nodeIds);
+
+    /**
+     * 更新节点父级节点名称
+     *
+     * @param sysProject 项目参数
+     */
+    void updateNameByProject(SysProject sysProject);
 }
